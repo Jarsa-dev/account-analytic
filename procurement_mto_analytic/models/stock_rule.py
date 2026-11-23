@@ -10,12 +10,12 @@ class StockRule(models.Model):
 
     def _make_po_get_domain(self, company_id, values, partner):
         res = super()._make_po_get_domain(company_id, values, partner)
-        if values.get("analytic_distribution", False):
+        if values.get("analytic_distribution"):
             res += (
                 (
-                    "order_line.analytic_distribution",
+                    "mto_analytic_distribution_key",
                     "=",
-                    json.dumps(values.get("analytic_distribution")),
+                    json.dumps(values["analytic_distribution"], sort_keys=True),
                 ),
             )
         return res

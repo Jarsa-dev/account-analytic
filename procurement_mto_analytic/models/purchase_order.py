@@ -1,45 +1,73 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
-import json
-
-from odoo import api, models
+from odoo import fields, models
+from odoo.fields import Domain
+from odoo.tools import SQL
 
 
 class PurchaseOrder(models.Model):
     _inherit = "purchase.order"
 
-    @api.model
-    @api.returns("self")
-    def search(self, domain, offset=0, limit=None, order=None):
-        new_domain = []
-        for element in domain:
-            if element[0] == "order_line.analytic_distribution":
-                try:
-                    value = json.loads(element[2])
-                except json.JSONDecodeError:
-                    new_domain.append(element)
-                new_domain.append(
-                    (
-                        "order_line.analytic_distribution",
-                        "=",
-                        value,
-                    )
+    # Technical search-only field: lets stock.rule._make_po_get_domain() look
+    # for a draft PO holding a line with exactly the same analytic
+    # distribution. The value is the distribution serialized as JSON, which
+    # keeps the domain hashable (procurements are grouped by domain).
+    mto_analytic_distribution_key = fields.Char(
+        compute="_compute_mto_analytic_distribution_key",
+        search="_search_mto_analytic_distribution_key",
+    )
+
+    def _compute_mto_analytic_distribution_key(self):
+        self.mto_analytic_distribution_key = False
+
+    def _search_mto_analytic_distribution_key(self, operator, value):
+        if operator not in ("=", "in"):
+            return NotImplemented
+        values = [value] if operator == "=" else list(value)
+        values = [v for v in values if v]
+        if not values:
+            return Domain.FALSE
+        return Domain(
+            "order_line",
+            "any",
+            Domain.custom(
+                to_sql=lambda table: SQL(
+                    "%s = ANY(%s::jsonb[])", table.analytic_distribution, values
                 )
-            else:
-                new_domain.append(element)
-        return super().search(new_domain, offset=offset, limit=limit, order=order)
+            ),
+        )
 
 
 class PurchaseOrderLine(models.Model):
     _inherit = "purchase.order.line"
 
-    @api.model
-    def _prepare_purchase_order_line_from_procurement(
-        self, product_id, product_qty, product_uom, company_id, values, po
+    def _find_candidate(
+        self,
+        product_id,
+        product_qty,
+        product_uom,
+        location_id,
+        name,
+        origin,
+        company_id,
+        values,
     ):
-        res = super()._prepare_purchase_order_line_from_procurement(
-            product_id, product_qty, product_uom, company_id, values, po
+        # Never merge a procurement into a PO line that has another analytic
+        # distribution.
+        lines = self
+        if values.get("analytic_distribution"):
+            lines = self.filtered(
+                lambda line: (
+                    line.analytic_distribution == values["analytic_distribution"]
+                )
+            )
+        return super(PurchaseOrderLine, lines)._find_candidate(
+            product_id,
+            product_qty,
+            product_uom,
+            location_id,
+            name,
+            origin,
+            company_id,
+            values,
         )
-        if values.get("analytic_distribution", False):
-            res["analytic_distribution"] = values.get("analytic_distribution", False)
-        return res

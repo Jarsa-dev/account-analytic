@@ -32,8 +32,19 @@ Purchase Analytic (MTO)
 
 |badge1| |badge2| |badge3| |badge4| |badge5|
 
-This module takes analytic distribution value from sale order to the
-created purchase order line.
+Since version 20.0, Odoo itself copies the analytic distribution of a
+sale order line to the purchase order line created by a *Replenish on
+Order (MTO)* procurement. However, when several purchase needs are
+grouped, Odoo merges them into the same purchase order line and keeps
+only one analytic distribution, so part of the cost ends up on the wrong
+analytic account.
+
+This module keeps purchase needs with different analytic distributions
+apart:
+
+- they are never merged into the same purchase order line, and
+- they go to different requests for quotation, even when the vendor
+  groups its RFQs (*Group RFQ* = *Always*, *Daily* or *Weekly*).
 
 **Table of contents**
 
@@ -43,16 +54,27 @@ created purchase order line.
 Usage
 =====
 
-1. Add any product with *Make To Order* option enabled into a new sale
-   order.
-2. Set *Analytic Distribution*.
-3. *Confirm Sale*
-4. The generated purchase order line will have this analytic
-   distribution. They won't be grouped if analytic distribution is
-   different.
+1. Make sure the product can be bought on order: give it (or its
+   category) the *Buy* and *Replenish on Order (MTO)* routes, and a
+   vendor.
+2. Create a sale order with that product and set an *Analytic
+   Distribution* on its lines. Use different distributions on several
+   lines or sale orders.
+3. *Confirm* the sale orders.
+4. Each analytic distribution gets its own purchase order line, and its
+   own request for quotation, with the same analytic distribution as the
+   sale order line.
 
 Changelog
 =========
+
+20.0.1.0.0 (2026-11-23)
+-----------------------
+
+Migrated to Odoo 20.0. Odoo now copies the analytic distribution from
+the sale order line to the purchase order line by itself, so the module
+only keeps purchase needs with different analytic distributions apart.
+It no longer depends on ``stock_analytic``.
 
 13.0.1.0.0 (2020-01-08)
 -----------------------

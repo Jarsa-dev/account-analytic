@@ -2,13 +2,13 @@
 
 {
     "name": "Purchase Analytic (MTO)",
-    "summary": "This module sets analytic account in purchase order line from "
-    "sale order analytic account",
-    "version": "17.0.1.0.0",
+    "summary": "Do not merge purchase needs with different analytic "
+    "distributions into the same purchase order",
+    "version": "20.0.1.0.0",
     "category": "Analytic",
     "license": "AGPL-3",
     "author": "Tecnativa, VentorTech, Odoo Community Association (OCA)",
     "website": "https://github.com/OCA/account-analytic",
-    "depends": ["sale_stock", "purchase_stock", "stock_analytic"],
+    "depends": ["sale_purchase_stock"],
     "installable": True,
 }
