@@ -7,6 +7,21 @@ from odoo import api, models
 class AccountMoveLine(models.Model):
     _inherit = "account.move.line"
 
+    def _get_weighted_analytic_distribution(self):
+        """Distribution of the lines of ``self`` that have one, weighted by
+        their amount. Not rounded, so it can be reused for any set of journal
+        items."""
+        lines = self.filtered("analytic_distribution")
+        total = sum(abs(line.balance) for line in lines)
+        if not total:
+            return {}
+        distribution = {}
+        for line in lines:
+            factor = abs(line.balance) / total
+            for key, percentage in line.analytic_distribution.items():
+                distribution[key] = distribution.get(key, 0.0) + percentage * factor
+        return distribution
+
     @api.model
     def _prepare_reconciliation_single_partial(
         self, debit_values, credit_values, shadowed_aml_values=None

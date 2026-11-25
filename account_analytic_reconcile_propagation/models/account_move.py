@@ -12,13 +12,4 @@ class AccountMove(models.Model):
         the amount of each of its lines."""
         invoice = self.filtered(lambda move: move.is_invoice(include_receipts=True))
         invoice = invoice.sorted("date", reverse=True)[:1]
-        lines = invoice.invoice_line_ids.filtered("analytic_distribution")
-        total = sum(abs(line.balance) for line in lines)
-        if not total:
-            return {}
-        distribution = {}
-        for line in lines:
-            factor = abs(line.balance) / total
-            for key, percentage in line.analytic_distribution.items():
-                distribution[key] = distribution.get(key, 0.0) + percentage * factor
-        return distribution
+        return invoice.invoice_line_ids._get_weighted_analytic_distribution()

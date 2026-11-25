@@ -77,6 +77,21 @@ class TestAccountAnalyticReconcilePropagation(AccountTestInvoicingCommon):
         )
         self._assert_weighted(writeoff_line)
 
+    def test_weighted_analytic_distribution(self):
+        invoice = self._invoice(self.company_data["currency"], "2017-01-01")
+        self.assertEqual(
+            invoice.invoice_line_ids._get_weighted_analytic_distribution(),
+            {str(self.account_a.id): 75.0, str(self.account_b.id): 25.0},
+        )
+        # Lines without distribution are ignored.
+        self.assertEqual(
+            invoice.line_ids._get_weighted_analytic_distribution(),
+            {str(self.account_a.id): 75.0, str(self.account_b.id): 25.0},
+        )
+        self.assertFalse(
+            self.env["account.move.line"]._get_weighted_analytic_distribution()
+        )
+
     def test_no_invoice_distribution(self):
         self.assertFalse(
             self.env["account.move"]._get_reconcile_analytic_distribution()
