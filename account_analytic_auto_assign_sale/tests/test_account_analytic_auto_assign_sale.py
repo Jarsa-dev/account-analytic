@@ -103,3 +103,59 @@ class TestAccountAnalyticAutoAssignSale(AccountTestInvoicingCommon):
             set(key.split(",")), {str(self.project_account.id), str(branch.id)}
         )
         self.assertEqual(percentage, 100.0)
+
+    def _services_order(self, analytic_account=False):
+        product = self.env["product.product"].create(
+            {
+                "name": "Reinvoiced Service Test",
+                "type": "service",
+                "list_price": 110,
+                "reinvoice_policy": "sales_price",
+                "invoice_policy": "delivery",
+            }
+        )
+        order = self.env["sale.order"].create(
+            {
+                "partner_id": self.partner.id,
+                "analytic_account_id": analytic_account and analytic_account.id,
+                "order_line": [Command.create({"product_id": product.id})],
+            }
+        )
+        order.action_confirm()
+        self.env["account.analytic.line"].with_context(
+            from_services_and_material=True
+        ).create(
+            {
+                "name": "Services & Materials Test",
+                "product_id": product.id,
+                "unit_amount": 1,
+                "order_id": order.id,
+            }
+        )
+        return order
+
+    def test_services_and_materials_account_inherited(self):
+        """The account created by the Services & Materials flow is the native
+        analytic account of the order, so lines and invoices carry it."""
+        order = self._services_order()
+        account = order.analytic_account_id
+        self.assertTrue(account)
+        self.assertEqual(
+            order.order_line.analytic_distribution, {str(account.id): 100.0}
+        )
+        invoice = order._create_invoices()
+        self.assertEqual(invoice.analytic_account_id, account)
+        self.assertEqual(
+            invoice.invoice_line_ids.analytic_distribution, {str(account.id): 100.0}
+        )
+
+    def test_services_and_materials_keeps_captured_account(self):
+        order = self._services_order(self.project_account)
+        self.assertEqual(order.analytic_account_id, self.project_account)
+        self.assertEqual(
+            order.order_line.analytic_distribution,
+            {str(self.project_account.id): 100.0},
+        )
+        self.assertEqual(
+            order._create_invoices().analytic_account_id, self.project_account
+        )

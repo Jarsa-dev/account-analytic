@@ -4,7 +4,7 @@
     "name": "Account Analytic Auto Assign Procurement",
     "summary": "Purchase orders created from sales take the project of the"
     " sale and are grouped by project",
-    "version": "19.0.1.0.0",
+    "version": "20.0.1.0.0",
     "author": "Odoo Community Association (OCA)",
     "category": "Accounting/Accounting",
     "website": "https://github.com/OCA/account-analytic",

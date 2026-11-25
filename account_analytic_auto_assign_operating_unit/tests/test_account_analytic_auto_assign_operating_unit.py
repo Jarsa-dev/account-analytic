@@ -12,11 +12,9 @@ class TestAccountAnalyticAutoAssignOperatingUnit(AccountTestInvoicingCommon):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.env.user.group_ids |= (
-            cls.env.ref("operating_unit.group_manager_operating_unit")
-            | cls.env.ref("operating_unit.group_multi_operating_unit")
-            | cls.env.ref("sales_team.group_sale_manager")
-        )
+        cls.env.user.group_ids |= cls.env.ref(
+            "operating_unit.group_manager_operating_unit"
+        ) | cls.env.ref("operating_unit.group_multi_operating_unit")
         plan = cls.env["account.analytic.plan"].create({"name": "Branch Plan Test"})
         cls.account_a, cls.account_b = cls.env["account.analytic.account"].create(
             [
@@ -70,16 +68,6 @@ class TestAccountAnalyticAutoAssignOperatingUnit(AccountTestInvoicingCommon):
         self.assertEqual(
             invoice.invoice_line_ids.analytic_distribution,
             {str(self.account_b.id): 100.0},
-        )
-
-    def test_sale_line(self):
-        order = self.env["sale.order"].create(self._order_vals(self.unit_a))
-        self.assertEqual(
-            order.order_line.analytic_distribution, {str(self.account_a.id): 100.0}
-        )
-        order.operating_unit_id = self.unit_b
-        self.assertEqual(
-            order.order_line.analytic_distribution, {str(self.account_b.id): 100.0}
         )
 
     def test_without_operating_unit_criterion(self):

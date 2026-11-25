@@ -3,7 +3,7 @@
 {
     "name": "Account Analytic Auto Assign Purchase Operating Unit",
     "summary": "Analytic distribution models by operating unit on purchase order lines",
-    "version": "19.0.1.0.0",
+    "version": "20.0.1.0.0",
     "author": "Odoo Community Association (OCA)",
     "category": "Accounting/Accounting",
     "website": "https://github.com/OCA/account-analytic",

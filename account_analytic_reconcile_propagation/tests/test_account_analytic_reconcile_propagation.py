@@ -20,7 +20,7 @@ class TestAccountAnalyticReconcilePropagation(AccountTestInvoicingCommon):
             ]
         )
 
-    def _invoice(self, currency, invoice_date):
+    def _invoice(self, currency, invoice_date, with_distribution=True):
         invoice = self.init_invoice(
             "out_invoice",
             invoice_date=invoice_date,
@@ -41,6 +41,8 @@ class TestAccountAnalyticReconcilePropagation(AccountTestInvoicingCommon):
             }
         )
         invoice.invoice_line_ids.tax_ids = False
+        if not with_distribution:
+            invoice.invoice_line_ids.analytic_distribution = False
         invoice.action_post()
         return invoice
 
@@ -79,3 +81,20 @@ class TestAccountAnalyticReconcilePropagation(AccountTestInvoicingCommon):
         self.assertFalse(
             self.env["account.move"]._get_reconcile_analytic_distribution()
         )
+
+    def test_write_off_without_invoice_distribution(self):
+        invoice = self._invoice(
+            self.company_data["currency"], "2017-01-01", with_distribution=False
+        )
+        writeoff_account = self.company_data["default_account_expense"]
+        payment = self._register_payment(
+            invoice,
+            amount=380.0,
+            payment_difference_handling="reconcile",
+            writeoff_account_id=writeoff_account.id,
+            writeoff_label="Discount",
+        )
+        writeoff_line = payment.move_id.line_ids.filtered(
+            lambda line: line.account_id == writeoff_account
+        )
+        self.assertFalse(writeoff_line.analytic_distribution)

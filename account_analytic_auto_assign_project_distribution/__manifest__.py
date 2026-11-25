@@ -4,7 +4,7 @@
     "name": "Account Analytic Auto Assign Project Distribution",
     "summary": "Predefined analytic distribution on the project, applied"
     " wherever the project is set",
-    "version": "19.0.1.0.0",
+    "version": "20.0.1.0.0",
     "author": "Odoo Community Association (OCA)",
     "category": "Accounting/Accounting",
     "website": "https://github.com/OCA/account-analytic",

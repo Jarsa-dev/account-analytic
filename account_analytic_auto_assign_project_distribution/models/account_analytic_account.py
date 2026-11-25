@@ -6,7 +6,7 @@ from odoo import models
 
 class AccountAnalyticAccount(models.Model):
     _name = "account.analytic.account"
-    _inherit = ["account.analytic.account", "analytic.mixin"]
+    _inherit = ["account.analytic.account", "analytic.mixin"]  # noqa: RUF012
 
     def _auto_assign_distribution(self):
         """The project itself goes in every key of its predefined split."""

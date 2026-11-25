@@ -4,7 +4,7 @@
     "name": "Account Analytic Auto Assign Account Move",
     "summary": "Project analytic account on the journal entry header,"
     " applied to all its product lines",
-    "version": "19.0.1.0.0",
+    "version": "20.0.1.0.0",
     "author": "Odoo Community Association (OCA)",
     "category": "Accounting/Accounting",
     "website": "https://github.com/OCA/account-analytic",

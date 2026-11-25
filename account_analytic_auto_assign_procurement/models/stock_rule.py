@@ -19,7 +19,4 @@ class StockRule(models.Model):
         vals = super()._prepare_purchase_order(company_id, origins, values)
         sale = self._get_auto_assign_sale_order(values[0])
         vals["analytic_account_id"] = sale.analytic_account_id.id
-        # Only when sale_operating_unit and purchase_operating_unit are there.
-        if "operating_unit_id" in sale._fields and sale.operating_unit_id:
-            vals["operating_unit_id"] = sale.operating_unit_id.id
         return vals

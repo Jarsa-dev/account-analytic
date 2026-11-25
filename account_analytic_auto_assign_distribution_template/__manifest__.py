@@ -3,7 +3,7 @@
 {
     "name": "Account Analytic Auto Assign Distribution Template",
     "summary": "Reusable percentage-split analytic distribution templates",
-    "version": "19.0.1.0.0",
+    "version": "20.0.1.0.0",
     "author": "Odoo Community Association (OCA)",
     "category": "Accounting/Accounting",
     "website": "https://github.com/OCA/account-analytic",
@@ -12,7 +12,7 @@
         "account",
     ],
     "data": [
-        "security/ir.model.access.csv",
+        "security/ir.access.csv",
         "views/account_analytic_distribution_template_views.xml",
         "views/account_move_line_views.xml",
     ],

@@ -4,7 +4,7 @@
     "name": "Account Analytic Auto Assign Product Category",
     "summary": "Analytic distribution models of a product category also apply"
     " to its subcategories",
-    "version": "19.0.1.0.0",
+    "version": "20.0.1.0.0",
     "author": "Odoo Community Association (OCA)",
     "category": "Accounting/Accounting",
     "website": "https://github.com/OCA/account-analytic",

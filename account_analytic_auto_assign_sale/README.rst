@@ -21,23 +21,26 @@ Account Analytic Auto Assign Sale
     :target: http://www.gnu.org/licenses/agpl-3.0-standalone.html
     :alt: License: AGPL-3
 .. |badge3| image:: https://img.shields.io/badge/github-OCA%2Faccount--analytic-lightgray.png?logo=github
-    :target: https://github.com/OCA/account-analytic/tree/19.0/account_analytic_auto_assign_sale
+    :target: https://github.com/OCA/account-analytic/tree/20.0/account_analytic_auto_assign_sale
     :alt: OCA/account-analytic
 .. |badge4| image:: https://img.shields.io/badge/weblate-Translate%20me-F47D42.png
-    :target: https://translation.odoo-community.org/projects/account-analytic-19-0/account-analytic-19-0-account_analytic_auto_assign_sale
+    :target: https://translation.odoo-community.org/projects/account-analytic-20-0/account-analytic-20-0-account_analytic_auto_assign_sale
     :alt: Translate me on Weblate
 .. |badge5| image:: https://img.shields.io/badge/runboat-Try%20me-875A7B.png
-    :target: https://runboat.odoo-community.org/builds?repo=OCA/account-analytic&target_branch=19.0
+    :target: https://runboat.odoo-community.org/builds?repo=OCA/account-analytic&target_branch=20.0
     :alt: Try me on Runboat
 
 |badge1| |badge2| |badge3| |badge4| |badge5|
 
-Adds a **Project** (analytic account) to the sale order header. Every
-order line gets it in its analytic distribution, merged with what the
-native analytic distribution models already put there: only the plan of
-the project is replaced, the other columns are kept.
+Uses the native **Analytic Account** of the sale order (the field of the
+``sale`` module, also filled by the *Services & Materials* flow when
+analytic lines are linked to the order) as the project of the order and
+shows it on the order header. Every order line gets it in its analytic
+distribution, merged with what the native analytic distribution models
+already put there: only the plan of that account is replaced, the other
+columns are kept.
 
-The project is passed to the invoices of the order, see
+The analytic account is passed to the invoices of the order, see
 ``account_analytic_auto_assign_account_move``.
 
 **Table of contents**
@@ -48,9 +51,12 @@ The project is passed to the invoices of the order, see
 Usage
 =====
 
-Set **Project** on a sale order (Other Info tab). Its lines, and the
-invoice generated from them, will carry that analytic account
-automatically.
+Set the **Analytic Account** on a sale order. Its lines, and the invoice
+generated from them, will carry that analytic account automatically.
+
+When the order has no analytic account and an analytic line is linked to
+it (*Services & Materials*), Odoo creates one for the order: from then
+on its lines and invoices carry it too.
 
 Bug Tracker
 ===========
@@ -58,7 +64,7 @@ Bug Tracker
 Bugs are tracked on `GitHub Issues <https://github.com/OCA/account-analytic/issues>`_.
 In case of trouble, please check there if your issue has already been reported.
 If you spotted it first, help us to smash it by providing a detailed and welcomed
-`feedback <https://github.com/OCA/account-analytic/issues/new?body=module:%20account_analytic_auto_assign_sale%0Aversion:%2019.0%0A%0A**Steps%20to%20reproduce**%0A-%20...%0A%0A**Current%20behavior**%0A%0A**Expected%20behavior**>`_.
+`feedback <https://github.com/OCA/account-analytic/issues/new?body=module:%20account_analytic_auto_assign_sale%0Aversion:%2020.0%0A%0A**Steps%20to%20reproduce**%0A-%20...%0A%0A**Current%20behavior**%0A%0A**Expected%20behavior**>`_.
 
 Do not contact contributors directly about support or help with technical issues.
 
@@ -78,6 +84,6 @@ OCA, or the Odoo Community Association, is a nonprofit organization whose
 mission is to support the collaborative development of Odoo features and
 promote its widespread use.
 
-This module is part of the `OCA/account-analytic <https://github.com/OCA/account-analytic/tree/19.0/account_analytic_auto_assign_sale>`_ project on GitHub.
+This module is part of the `OCA/account-analytic <https://github.com/OCA/account-analytic/tree/20.0/account_analytic_auto_assign_sale>`_ project on GitHub.
 
 You are welcome to contribute. To learn how please visit https://odoo-community.org/page/Contribute.

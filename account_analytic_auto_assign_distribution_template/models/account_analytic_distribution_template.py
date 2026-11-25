@@ -6,7 +6,7 @@ from odoo import fields, models
 
 class AccountAnalyticDistributionTemplate(models.Model):
     _name = "account.analytic.distribution.template"
-    _inherit = ["analytic.mixin"]
+    _inherit = ["analytic.mixin"]  # noqa: RUF012
     _description = "Reusable Analytic Distribution Template"
 
     name = fields.Char(required=True)

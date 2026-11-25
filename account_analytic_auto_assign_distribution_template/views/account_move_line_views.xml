@@ -13,6 +13,7 @@
                     name="distribution_template_id"
                     optional="hide"
                     options="{'no_create': True}"
+                    groups="analytic.group_analytic_accounting"
                 />
             </xpath>
         </field>

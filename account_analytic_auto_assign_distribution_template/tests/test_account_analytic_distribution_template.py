@@ -2,6 +2,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 from odoo import Command
+from odoo.exceptions import UserError
 from odoo.tests import tagged
 
 from odoo.addons.account.tests.common import AccountTestInvoicingCommon
@@ -72,3 +73,37 @@ class TestAccountAnalyticDistributionTemplate(AccountTestInvoicingCommon):
                 str(self.account_ops.id): 40.0,
             },
         )
+
+    def test_multi_company(self):
+        company_b = self.setup_other_company()["company"]
+        template_b = self.env["account.analytic.distribution.template"].create(
+            {"name": "Company B Test", "company_id": company_b.id}
+        )
+        shared = self.env["account.analytic.distribution.template"].create(
+            {"name": "Shared Test", "company_id": False}
+        )
+        user = self.env["res.users"].create(
+            {
+                "name": "Template User Test",
+                "login": "template_user_test",
+                "company_id": self.env.company.id,
+                "company_ids": [Command.set(self.env.company.ids)],
+                "group_ids": [
+                    Command.set(
+                        [
+                            self.env.ref("account.group_account_invoice").id,
+                            self.env.ref("analytic.group_analytic_accounting").id,
+                        ]
+                    )
+                ],
+            }
+        )
+        visible = (
+            self.env["account.analytic.distribution.template"]
+            .with_user(user)
+            .search([("id", "in", (self.template | template_b | shared).ids)])
+        )
+        self.assertEqual(visible, self.template | shared)
+        line = self.init_invoice("in_invoice", products=self.product_a).invoice_line_ids
+        with self.assertRaises(UserError):
+            line.distribution_template_id = template_b

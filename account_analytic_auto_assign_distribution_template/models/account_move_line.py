@@ -9,6 +9,7 @@ class AccountMoveLine(models.Model):
 
     distribution_template_id = fields.Many2one(
         comodel_name="account.analytic.distribution.template",
+        check_company=True,
         help="Pick a saved percentage split to apply to this line's"
         " analytic distribution.",
     )

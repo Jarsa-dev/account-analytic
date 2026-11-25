@@ -7,13 +7,10 @@ from odoo import fields, models
 class SaleOrder(models.Model):
     _inherit = "sale.order"
 
-    analytic_account_id = fields.Many2one(
-        comodel_name="account.analytic.account",
-        string="Project",
-        check_company=True,
-        index="btree_not_null",
-        help="Applied to every line of this order and to its invoices.",
-    )
+    # The analytic account of the order is the native field of ``sale`` (also
+    # filled by the Services & Materials flow): it is reused on purpose as the
+    # project of the order. Only attributes that keep its meaning are added.
+    analytic_account_id = fields.Many2one(check_company=True, index="btree_not_null")
 
     def _prepare_invoice(self):
         vals = super()._prepare_invoice()

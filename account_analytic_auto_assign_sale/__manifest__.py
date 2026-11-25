@@ -4,7 +4,7 @@
     "name": "Account Analytic Auto Assign Sale",
     "summary": "Project analytic account on the sale order, inherited"
     " by its lines and invoices",
-    "version": "19.0.1.0.0",
+    "version": "20.0.1.0.0",
     "author": "Odoo Community Association (OCA)",
     "category": "Accounting/Accounting",
     "website": "https://github.com/OCA/account-analytic",
